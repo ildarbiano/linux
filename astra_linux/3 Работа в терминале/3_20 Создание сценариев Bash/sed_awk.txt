@@ -1,0 +1,12 @@
+admilya@astra-net-terminal:~$ sudo cat /var/log/syslog > kernel.txt
+admilya@astra-net-terminal:~$ sed 's/kernel/kern/g' kernel.txt > kern.txt
+admilya@astra-net-terminal:~$ awk '{print $3, $5}' kern.txt | grep kern > kern-mod.txt
+
+
+
+awk '{print $1}' 2_kern.txt
+awk '{print $1, $2, $3, $4, $5}' 2_kern.txt
+awk '/kern/ {print $1, $2, $3, $4, $5}' 3_kern.txt > 4_kern.txt
+awk '{sub(/kern.*/, "kern"); print}' kern.txt > kern-mod.txt
+
+

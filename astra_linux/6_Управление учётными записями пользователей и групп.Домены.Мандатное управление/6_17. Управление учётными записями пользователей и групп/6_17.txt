@@ -1,0 +1,79 @@
+admilya@srv1:~$ mcedit .bashrc
+  fi
+fi
+echo "Welcome,${USER}! Let's work."
+echo "Today $(date)"
+admilya@srv1:~$ source ~/.bashrc
+
+
+admilya@srv1:~$ ssh-keygen -t rsa -b 4096
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/admilya/.ssh/id_rsa):
+Created directory '/home/admilya/.ssh'.
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /home/admilya/.ssh/id_rsa.
+Your public key has been saved in /home/admilya/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:Un3cHgerjkoWBv6TF9LYoROsG5y6fJES4el4MK+6gKs admilya@srv1.test.ru
+The key's randomart image is:
++---[RSA 4096]----+
+|              .  |
+|    .  . . . . o |
+|   . o. + o o + .|
+|  o +o = * o o o |
+|   * .B.S + . .  |
+|. . =.o* = +     |
+|o  o....* o .    |
+|.... ..o +       |
+|Eo  o.  .        |
++----[SHA256]-----+
+
+
+admilya@srv1:~$ tree .ssh/
+.ssh/
+├── id_rsa
+└── id_rsa.pub
+
+admilya@srv1:~$ ssh-copy-id ilya@192.168.0.61
+/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/admilya/.ssh/id_rsa.pub"
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+ilya@192.168.0.61's password:
+Number of key(s) added: 1
+Now try logging into the machine, with:   "ssh 'ilya@192.168.0.61'"
+and check to make sure that only the key(s) you wanted were added.
+admilya@srv1:~$
+admilya@srv1:~$
+admilya@srv1:~$
+admilya@srv1:~$ ssh ilya@192.168.0.61
+Activate the web console with: systemctl enable --now cockpit.socket
+Last login: Mon Sep  1 23:08:52 2025 from 192.168.0.33
+[ilya@client-rhcent ~]$
+[ilya@client-rhcent ~]$
+
+
+
+
+
+[ilya@client-rhcent ~]$ ssh-copy-id admilya@192.168.0.44
+/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/ilya/.ssh/id_rsa.pub"
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+admilya@192.168.0.44's password:
+Number of key(s) added: 1
+Now try logging into the machine, with:   "ssh 'admilya@192.168.0.44'"
+[ilya@client-rhcent ~]$
+[ilya@client-rhcent ~]$
+[ilya@client-rhcent ~]$
+and check to make sure that only the key(s) you wanted were added.
+[ilya@client-rhcent ~]$ ssh admilya@192.168.0.44
+You have new mail.
+Last login: Mon Aug 25 08:18:58 2025 from 192.168.0.33
+Welcome,admilya! Let's work.
+Today Пн авг 25 08:38:27 MSK 2025
+admilya@srv1:~$
+admilya@srv1:~$
+
+
+

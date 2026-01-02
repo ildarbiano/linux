@@ -1,0 +1,14 @@
+admilya@astra-net-terminal:~$ sudo mkdir /mnt/shared && sudo mount //127.0.1.1/public /mnt/shared -o users,sec=none
+admilya@astra-net-terminal:~$ sudo mount //127.0.1.1/public /mnt/shared -o users,sec=none,rw,vers=1.0
+sudo mount //192.168.0.41/public /mnt/shared -o users,sec=none,rw,vers=1.0
+
+	mount -t ext3 /tmp/disk.img /mnt
+       Этот тип монтирования знает о трех вариантах, а именно: loop, offset и sizelimit, которые на самом деле являются опциями losetup(8).  (Эти опции
+       Начиная с Linux 2.6.25 поддерживается автоматическое уничтожение петлевых устройств, это означает, что любое петлевое устройство, отводимое mount
+       будет освобождаться umount независимо от /etc/mtab.
+
+admilya@astra-net-terminal:~$ mount
+.............
+//127.0.1.1/public on /mnt/shared type cifs (rw,nosuid,nodev,noexec,relatime,vers=3.1.1,sec=none,cache=strict,uid=0,noforceuid,gid=0,noforcegid,addr=127.0.1.1,file_mode=0755,dir_mode=0755,soft,nounix,serverino,mapposix,rsize=4194304,wsize=4194304,bsize=1048576,echo_interval=60,actimeo=1)
+
+

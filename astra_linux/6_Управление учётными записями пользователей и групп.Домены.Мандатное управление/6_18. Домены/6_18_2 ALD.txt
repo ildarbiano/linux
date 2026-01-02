@@ -1,0 +1,76 @@
+Для чего нам может понадобиться NTP server? Например, существуют службы в операционных системах, которые могут зависеть от синхронизированного времени. Наиболее ярким примером таких служб является протокол аутентификации Kerberos. Для его работы необходимо, чтобы на компьютерах, доступ к которым осуществляется с использованием этого протокола, системное время различалось не более чем на 5 минут. Кроме того, точное время на всех компьютерах значительно облегчает анализ журналов безопасности при расследовании инцидентов в локальной сети.
+
+root@srv1:/home/admilya# cp /etc/ntp.conf /etc/ntp.conf.backup		файл точного времени. конфигурационный файл для работы протокола NTP (Network Time Protocol) в системе. Он считывается демоном ntpd и инициализирует его при старте, указывая источники синхронизации, режимы и другую информацию
+root@srv1:/home/admilya# echo "" > /etc/ntp.conf
+root@srv1:/home/admilya# mcedit /etc/ntp.conf
+driftfile /var/lib/ntp/ntp.drift 			— указывает файл для хранения информации о частоте смещения времени. В этом файле хранится значение, получаемое в результате предшествующих корректировок времени
+	driftfile /etc/ntp/ntp.drift					#путь к дрифт файлу
+	statsdir /var/log/ntpstats/					задает имя каталога, в котором будут находится файлы со статистикой сервера;
+	statistics loopstats peerstats clockstats			описание ниже
+	filegen loopstats file loopstats type day enable		– определяет алгоритм генерации имен файлов
+	filegen peerstats file peerstats type day enable		– определяет алгоритм генерации имен файлов
+	filegen clockstats file clockstats type day enable		– определяет алгоритм генерации имен файлов
+	server  127.127.1.1
+	fudge   127.127.1.1     stratum 0
+	restrict -4 default kod notrap nomodify nopeer noquery		Настройки для IPv4
+	restrict -6 default kod notrap nomodify nopeer noquery		Настройки для IPv6
+	restrict 127.0.0.1						позволяют обмен данные серверу с самим собой.
+	restrict ::1							позволяют обмен данные серверу с самим собой.
+	restrict 192.168.0.1 mask 255.255.255.0 nomodify notrap
+* где:
+restrict default 				— задает значение по умолчанию для всех рестриктов.
+kod 						— узлам, которые часто отправляют запросы сначала отправить поцелуй смерти (kiss of death), затем отключить от сервера.
+notrap 						— не принимать управляющие команды.
+nomodify 					— запрещает команды, которые могут вносить изменения состояния.
+nopeer 						— не синхронизироваться с хостом.
+noquery 					— не принимать запросы.
+-------
+statistics loopstats 		– при каждой модификации локальных часов записывает строчку в файл loopstats;
+statistics peerstats 		– каждое общение с соседом записывается в журнал, хранящийся в файле peerstats;
+statistics clockstats 		– каждое сообщение от драйвера локальных часов записывается в журнал, хранящийся в файле clockstats;
+-------
+filegen [file {filename}] [type {typename}] [flag {flagval}] [link|nolink] [enable|disable]– определяет алгоритм генерации имен файлов, которые состоят из:
+префикс – постоянная часть имени файла, задается либо при компиляции, либо специальными командами конфигурации;
+имя файла – добавляется к префиксу без косой черты, две точки запрещены, может быть изменена ключем file;
+суффикс – генерируется в зависимости от typename;
+=================================================
+
+root@srv1:/home/admilya# systemctl restart ntp
+root@srv1:/home/admilya# systemctl status ntp
+root@srv1:/home/admilya# systemctl enable ntp
+Synchronizing state of ntp.service with SysV service script with /lib/systemd/systemd-sysv-install.
+Executing: /lib/systemd/systemd-sysv-install enable ntp
+Created symlink /etc/systemd/system/multi-user.target.wants/ntp.service → /lib/systemd/system/ntp.service.
+-----------------
+root@srv1:/home/admilya# sudo apt install fly-admin-ald-server ald-server-common smolensk-security-ald ald-client-common fly-admin-ald-client
+Чтение списков пакетов… Готово
+Построение дерева зависимостей
+Чтение информации о состоянии… Готово
+E: Не удалось найти пакет smolensk-security-ald
+-----------------
+root@srv1:/home/admilya# lsb_release -a
+No LSB modules are available.
+Distributor ID: AstraLinuxCE
+Description:    Astra Linux CE 2.12.46 (Orel)
+Release:        2.12.46
+Codename:       orel
+root@srv1:/home/admilya# sudo apt install orel-security-ald
+E: Невозможно получить некоторые архивы, вероятно надо запустить apt-get update или попытаться повторить запуск с ключом --fix-missing
+
+root@srv1:/home/admilya# apt-get update
+Ошк:1 https://dl.astralinux.ru/astra/stable/2.12_x86-64/repository orel InRelease
+  Could not resolve host: dl.astralinux.ru
+Чтение списков пакетов… Готово
+W: Не удалось получить https://dl.astralinux.ru/astra/stable/2.12_x86-64/repository/dists/orel/InRelease  Could not resolve host: dl.astralinux.ru
+W: Некоторые индексные файлы не скачались. Они были проигнорированы или вместо них были использованы старые версии.
+
+sudo apt install orel-security-ald --fix-missing
+....
+После данной операции, объём занятого дискового пространства возрастёт на 28,2 MB.
+....
+E: Не удалось получить https://dl.astralinux.ru/astra/stable/2.12_x86-64/repository/pool/non-free/o/orel-security-ald/orel-security-ald_2.0.2_amd64.deb  Could not resolve host: dl.astralinux.ru
+E: Аварийное завершение установки.
+??????????????????????????????????
+
+
+

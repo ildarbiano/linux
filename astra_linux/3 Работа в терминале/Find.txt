@@ -1,0 +1,20 @@
+admilya@astra-net-terminal:~$ sudo find / -type f -name vsftpd.service
+/lib/systemd/system/vsftpd.service
+/var/lib/systemd/deb-systemd-helper-enabled/multi-user.target.wants/vsftpd.service
+
+sudo find / -type f -name "*java*" 2>/dev/null
+find / -iname "*java*" 2>/dev/null
+
+admilya@astra-net-terminal:~$ sudo cat /lib/systemd/system/vsftpd.service
+[Unit]
+Description=vsftpd FTP server
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/sbin/vsftpd /etc/vsftpd.conf
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStartPre=-/bin/mkdir -p /var/run/vsftpd/empty
+
+[Install]
+WantedBy=multi-user.target

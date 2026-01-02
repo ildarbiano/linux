@@ -1,0 +1,21 @@
+root@astra-net-terminal:/home/admilya# apt install afick
+root@astra-net-terminal:/home/admilya# afick -i			запуск построения начальной БД
+
+root@astra-net-terminal:/home/admilya# mcedit /etc/afick.conf
+###############
+# alias section
+###############
+Lesson = p+n+i+u+g+s+b+md5
+
+##############
+# file section
+##############
+/etc/		Lesson
+/opt/		Lesson
+
+----------
+root@astra-net-terminal:/home/admilya# afick --update		обновить БД
+root@astra-net-terminal:/home/admilya# afick -C			проверка на ошибки /etc/afick.conf
+# config file /etc/afick.conf ok
+root@astra-net-terminal:/home/admilya# afick -k			запуск программы в режиме проверки
+

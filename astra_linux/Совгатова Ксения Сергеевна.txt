@@ -1,0 +1,23 @@
+https://dion.vc/event/ksovgatova-astra
+https://basecode.t1.ru/course_sessions/5210
+Артём Савенков
+asavenkov@inno.tech
+@saveart_personal
+
+========== учебный стенд =======
+Для выполнения практических заданий курса «Astra Linux» вам необходим будет учебный стенд. 
+Во вложении инструкция по подключению к нему. 
+Для доступа к стенду вам нужно подключиться с рабочего устройства к Cisco connect.inno.tech.
+ca-ast-sd-inf-16	10.10.144.67
+
+ssh ast-admin
+Пароль g7THLzJXq37F
+
+Если у вас нет Cisco или планируете подключаться к стенду с личного устройства - нужен OpenVPN. Конфиг и инструкция во вложении
+IVBondar	IvbjEiHmA2K	"OU=Students,DC=innoca,DC=local"
+
+
+
+========= VirtualBox =========
+Astra Graph
+

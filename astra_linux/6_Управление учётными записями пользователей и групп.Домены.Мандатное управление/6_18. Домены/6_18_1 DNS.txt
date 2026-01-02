@@ -1,0 +1,98 @@
+root@astra-net-terminal:/home/admilya# apt-get install bind9 bind9utils bind9-doc
+root@astra-net-terminal:/home/admilya# touch /etc/bind/db.test
+root@astra-net-terminal:/home/admilya# touch /etc/bind/db.192.168.0
+root@astra-net-terminal:/home/admilya# cat /etc/bind/db.test
+$TTL 604800
+  @ IN SOA srv1.test.ru. root.test.ru. (
+  20110913 ; Serial
+  604800 ; Refresh
+  86400 ; Retry
+  2419200 ; Expire
+  604800 ) ; Negative Cache TTL
+#  IN NS srv1
+@ IN NS srv1		#---пришлось изменить в результате следования ошибки запуска bind
+  srv1            IN A 192.168.0.44
+  @               IN              MX      10      srv1
+  vm01           IN              A               192.168.0.101
+  vm02           IN              A               192.168.0.102
+
+
+root@astra-net-terminal:/home/admilya# cat /etc/bind/db.192.168.0
+$TTL 604800
+@ IN SOA srv1.test.ru. root.test.ru. (
+2011091301 ; Serial
+604800 ; Refresh
+86400 ; Retry
+2419200 ; Expire
+604800 ) ; Negative Cache TTL
+	IN NS srv1.test.ru.
+1 IN PTR srv1.test.ru.
+
+
+
+root@astra-net-terminal:/home/admilya# mcedit /etc/bind/named.conf.local
+zone "test.ru" {
+  type master;
+  file "/etc/bind/db.test";
+  };
+  zone "0.168.192.in-addr.arpa" {
+  type master;
+  file "/etc/bind/db.192.168.0";
+  };
+
+
+root@astra-net-terminal:/home/admilya# cat /etc/bind/db.root
+. 3600000 IN NS A.ROOT-SERVERS.NET.
+A.ROOT-SERVERS.NET. 3600000 A 192.168.0.44
+
+
+
+root@astra-net-terminal:/home/admilya# cat /etc/bind/named.conf.options
+acl "corpnet" {192.168.0.0/24; 127.0.0.1;};
+  options {
+  directory "/var/cache/bind";
+  auth-nxdomain no;
+  listen-on-v6 { any; };
+  allow-query {"corpnet";};
+
+
+root@astra-net-terminal:/home/admilya# cat /etc/resolv.conf
+search test.ru
+nameserver 192.168.0.44
+
+
+root@astra-net-terminal:/home/admilya# cat /etc/hosts
+127.0.0.1                       localhost
+192.168.0.44    srv1.test.ru    srv1
+
+# The following lines are desirable for IPv6 capable hosts
+::1     localhost ip6-localhost ip6-loopback
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+
+
+root@astra-net-terminal:/home/admilya# hostnamectl set-hostname srv1.test.ru
+root@astra-net-terminal:/home/admilya# bash
+root@srv1:/home/admilya#
+
+root@srv1:/home/admilya# systemctl restart bind9
+
+root@srv1:/home/admilya# nmtui
+указали IP для DNS
+
+root@srv1:/home/admilya# systemctl restart NetworkManager
+root@srv1:/home/admilya# systemctl restart bind9
+root@srv1:/home/admilya# systemctl status bind9
+====++++======================================
+root@srv1:/home/admilya# nslookup srv1
+Server:         192.168.0.44
+Address:        192.168.0.44#53
+Name:   srv1.test.ru
+Address: 192.168.0.44
+
+root@srv1:/home/admilya# nslookup srv1.test.ru
+Server:         192.168.0.44
+Address:        192.168.0.44#53
+Name:   srv1.test.ru
+Address: 192.168.0.44
+

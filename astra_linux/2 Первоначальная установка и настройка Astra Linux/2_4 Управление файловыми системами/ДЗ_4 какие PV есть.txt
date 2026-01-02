@@ -1,0 +1,14 @@
+root@astra-net-terminal:/home/admilya# lsblk -f
+NAME                                FSTYPE      LABEL UUID                                   MOUNTPOINT
+sda
+├─sda1                              ext2              3b22a075-5452-4eca-a333-c22eb50409e0   /boot
+├─sda2
+└─sda5                              LVM2_member       pD0ARM-WRXm-3UVG-h3wr-6TJ4-Z0jh-HRUyO2
+  ├─astra--net--terminal--vg-root   ext4              713ac7e8-bcc8-4b77-b78e-b60c3c893f29   /
+  └─astra--net--terminal--vg-swap_1 swap              dd80707b-c190-4f6d-98c9-38b59c1c580f   [SWAP]
+sdb
+├─sdb1                              LVM2_member       t0mQ7S-lhsK-Wys5-70O0-eGvl-D0CT-rAXEYT
+├─sdb2                              LVM2_member       eNRDuA-RJsf-KYuQ-uCtL-Lz54-P5RY-PPsPWE
+│ └─test_vg-T1                      ext4              a691ddd7-0fda-42cd-9765-30e0a80be089   /data/less24
+└─sdb3                              LVM2_member       e3ZmaH-SeGo-yc1u-VTQj-bf1Q-vhkG-lsQoAx
+sr0

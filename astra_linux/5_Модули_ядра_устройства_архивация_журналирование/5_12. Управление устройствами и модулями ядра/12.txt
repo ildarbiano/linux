@@ -1,0 +1,11 @@
+/dev/mapper/test_vg-T1
+/data/less24
+
+root@astra-net-terminal:/home/admilya# cat /etc/udev/rules.d/eth0_100.rules
+ACTION=="add", SUBSYSTEM=="net", KERNEL=="eth*", NAME="eth0", RUN+="/sbin/ethtool -s eth0 speed 100 duplex full autoneg off"
+
+root@astra-net-terminal:/home/admilya# cat /etc/udev/rules.d/right.rules
+KERNEL=="sdc1", MODE="0666", OWNER="user", GROUP="users"
+
+root@astra-net-terminal:/home/admilya# cat /etc/udev/rules.d/link.rules
+KERNEL=="sdb1", SYMLINK+="/dev/mydisk"

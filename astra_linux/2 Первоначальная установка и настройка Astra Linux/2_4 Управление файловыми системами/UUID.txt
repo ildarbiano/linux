@@ -1,0 +1,27 @@
+admilya@astra-net-terminal:~$ ls -la /dev/disk/by-uuid/
+итого 0
+drwxr-xr-x 2 root root 100 авг 13  2025 .
+drwxr-xr-x 6 root root 120 авг 13  2025 ..
+lrwxrwxrwx 1 root root  10 авг 13 12:05 3b22a075-5452-4eca-a333-c22eb50409e0 -> ../../sda1
+lrwxrwxrwx 1 root root  10 авг 13 12:05 713ac7e8-bcc8-4b77-b78e-b60c3c893f29 -> ../../dm-0
+lrwxrwxrwx 1 root root  10 авг 13 12:05 dd80707b-c190-4f6d-98c9-38b59c1c580f -> ../../dm-1
+
+admilya@astra-net-terminal:~$ sudo blkid
+/dev/sda1: UUID="3b22a075-5452-4eca-a333-c22eb50409e0" TYPE="ext2" PARTUUID="26b1cd04-01"
+/dev/sda5: UUID="pD0ARM-WRXm-3UVG-h3wr-6TJ4-Z0jh-HRUyO2" TYPE="LVM2_member" PARTUUID="26b1cd04-05"
+/dev/mapper/astra--net--terminal--vg-root: UUID="713ac7e8-bcc8-4b77-b78e-b60c3c893f29" TYPE="ext4"
+/dev/mapper/astra--net--terminal--vg-swap_1: UUID="dd80707b-c190-4f6d-98c9-38b59c1c580f" TYPE="swap"
+
+admila@astra-net-terminal:~$ cat /etc/fstab
+# /etc/fstab: static file system information.
+# Use 'blkid' to print the universally unique identifier for a
+# device; this may be used with UUID= as a more robust way to name devices
+# that works even if disks are added and removed. See fstab(5).
+# <file system> <mount point>   <type>  <options>       <dump>  <pass>
+/dev/mapper/astra--net--terminal--vg-root /               ext4    errors=remount-ro 0       1
+# /boot was on /dev/sda1 during installation
+UUID=3b22a075-5452-4eca-a333-c22eb50409e0 /boot           ext2    defaults        0       2
+/dev/mapper/astra--net--terminal--vg-swap_1 none            swap    sw              0       0
+/dev/sr0        /media/cdrom0   udf,iso9660 user,noauto     0       0
+
+

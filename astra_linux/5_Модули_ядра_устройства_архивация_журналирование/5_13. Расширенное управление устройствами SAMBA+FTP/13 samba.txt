@@ -1,0 +1,95 @@
+sudo apt update
+admilya@astra-net-terminal:~$ sudo apt install samba
+admilya@astra-net-terminal:~$ sudo systemctl status smbd.service nmbd.service
+admilya@astra-net-terminal:~$ sudo useradd -M -s /usr/sbin/nologin user-samba
+admilya@astra-net-terminal:~$ sudo useradd -M -s /usr/sbin/nologin user_samba
+/usr/sbin/nologin в Linux - это специальная программа, которая запрещает пользователю вход в систему через SSH или локальную консоль, при этом предоставляя обратную связь о том, что учетная запись заблокирована. Она обычно используется для учетных записей, которые не должны иметь интерактивного доступа к системе, например, для учетных записей системных служб или заблокированных пользователей. 
+       -M, --no-create-home
+           Не создавать домашний каталог пользователя, даже если значение системной переменной в файле /etc/login.defs (CREATE_HOME) равно yes.
+       -s, --shell ОБОЛОЧКА
+           Этот параметр изменяет переменную SHELL в файле /etc/default/useradd.
+       Системный администратор сам решает, какие файлы нужно положить в каталог /etc/skel/ (или в любой другой каталог шаблонов, указанный в
+       /etc/default/useradd или в командной строке).
+       Также, если имя пользователя уже существует во внешней базе данных такой как NIS или LDAP, то useradd не станет создавать учётную запись
+
+admilya@astra-net-terminal:~$ sudo groupadd group-samba
+admilya@astra-net-terminal:~$ sudo groupadd group_samba
+admilya@astra-net-terminal:~$ sudo usermod -aG group-samba user-samba
+           Добавить пользователя в дополнительную группу(ы). Использовать только вместе с параметром -G.
+       -G, --groups ГРУППА1[,ГРУППА2,...[,ГРУППАN]]]
+
+admilya@astra-net-terminal:~$ sudo usermod -aG group-samba user-samba
+admilya@astra-net-terminal:~$ sudo usermod -aG group_samba user_samba
+admilya@astra-net-terminal:~$ sudo smbpasswd -a user-samba
+admilya@astra-net-terminal:~$ sudo smbpasswd -a user_samba
+New SMB password:123
+Retype new SMB password:123
+admilya@astra-net-terminal:~$ sudo mkdir -p /DATA/samba/{public,private}
+admilya@astra-net-terminal:~$ tree /DATA
+/DATA
+└── samba
+    ├── private
+    └── public
+admilya@astra-net-terminal:~$ sudo chmod -R 0755 /DATA/samba/
+admilya@astra-net-terminal:~$ sudo chown nobody:nogroup /DATA/samba/public/
+admilya@astra-net-terminal:~$ sudo chown user-samba:group-samba /DATA/samba/private/
+admilya@astra-net-terminal:~$ sudo cp /etc/samba/smb.conf /etc/samba/smb.conf.backup
+admilya@astra-net-terminal:~$ sudo cat /etc/samba/smb.conf
+[global]
+workgroup = WORKGROUP
+security = user
+map to guest = bad user
+wins support = no
+dns proxy = no
+[public]
+path = /DATA/samba/public
+guest ok = yes
+force user = nobody
+browsable = yes
+readonly = no
+[private]
+path = /DATA/samba/private
+valid user = @group-samba
+group-samba
+guest ok = yes
+browsable = yes
+writeable = yes
+
+admilya@astra-net-terminal:~$ sudo testparm -s
+rlimit_max: increasing rlimit_max (1024) to minimum Windows limit (16384)
+Registered MSG_REQ_POOL_USAGE
+Registered MSG_REQ_DMALLOC_MARK and LOG_CHANGED
+Load smb config files from /etc/samba/smb.conf
+rlimit_max: increasing rlimit_max (1024) to minimum Windows limit (16384)
+Processing section "[public]"
+Processing section "[private]"
+Unknown parameter encountered: "valid user"
+Ignoring unknown parameter "valid user"
+Loaded services file OK.
+WARNING: The 'netbios name' is too long (max. 15 chars).
+Server role: ROLE_STANDALONE
+# Global parameters
+[global]
+        dns proxy = No
+        map to guest = Bad User
+        security = USER
+        idmap config * : backend = tdb
+[public]
+        force user = nobody
+        guest ok = Yes
+        path = /DATA/samba/public
+        read only = No
+[private]
+        guest ok = Yes
+        path = /DATA/samba/private
+        read only = No
+
+admilya@astra-net-terminal:~$ sudo systemctl restart smbd.service nmbd.service
+admilya@astra-net-terminal:~$ sudo systemctl status smbd.service nmbd.service
+● smbd.service - Samba SMB Daemon
+.........
+авг 19 10:52:02 astra-net-terminal smbd[6992]:   daemon_ready: STATUS=daemon 'smbd' finished starting up and ready to serve connections
+
+
+
+

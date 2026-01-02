@@ -1,0 +1,36 @@
+root@astra-net-terminal:/home/admilya# cat /home/admilya/lesson_16.sh
+#! /bin/bash
+
+echo "------------ сохранено $(date)-------------------" >> /home/admilya/fstab-backup
+cat /etc/fstab >> /home/admilya/fstab-backup
+
+/home/admilya/fstab-backup
+
+admilya@astra-net-terminal:~$ sudo crontab -l
+# Edit this file to introduce tasks to be run by cron.
+......
+# m h  dom mon dow   command
+#*/1 * * * * /bin/sh /home/admilya/lesson_16.sh
+#31 10 * * * /bin/sh /home/admilya/lesson_16.sh
+* 3 * * * /bin/sh /home/admilya/lesson_16.sh
+
+admilya@astra-net-terminal:~$ tail -f /home/admilya/fstab-backup
+
+
+root@astra-net-terminal:/etc/init.d# ./cron restart
+[ ok ] Restarting cron (via systemctl): cron.service.
+
+
+
+root@astra-net-terminal:/etc/init.d# tail -n 1000 /var/log/syslog | grep cron
+root@astra-net-terminal:/etc/init.d# 
+tail -n 1000 /var/log/syslog | grep cron
+Aug 21 07:30:01 astra-net-terminal cron[499]: (*system*) RELOAD (/etc/crontab)
+Aug 21 07:30:01 astra-net-terminal cron[499]: Error: bad username; while reading /etc/crontab
+Aug 21 07:30:01 astra-net-terminal cron[499]: (*system*) ERROR (Syntax error, this crontab file will be ignored)
+Aug 21 07:30:01 astra-net-terminal CRON[1546]: (root) CMD ([ -x /etc/init.d/anacron ] && if [ ! -d /run/systemd/system ]; then /usr/sbin/invoke-rc.d anacron start >/dev/null; fi)
+
+
+root@astra-net-terminal:/home/admilya# systemctl status ntp
+root@astra-net-terminal:/home/admilya# systemctl start ntp
+

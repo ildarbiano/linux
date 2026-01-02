@@ -1,0 +1,25 @@
+Создание service-файла:
+[Unit] Description=My Timer Service [Service] ExecStart=/usr/bin/my_script.sh  
+Создание timer-файла:
+[Unit] 
+Description=Run My Timer Service every 15 minutes 
+[Timer] 
+OnBootSec=10min OnUnitActiveSec=15min 
+[Install]
+WantedBy=timers.target  
+
+
+Target в systemd — это файл конфигурации, который определяет набор модулей (юнитов) для запуска или остановки системы в определённом состоянии. Цель — группировать юниты через цепочку зависимостей, чтобы управлять группой связанных служб как единым
+
+
+Структура
+Файлы target имеют суффикс .target. Они могут включать: 
+Раздел [Unit] — описывает цель, определяет зависимости. 
+	Директивы Requires= и Wants= — устанавливают зависимости (жёстко или мягко). 
+	Директивы After= и Before= — устанавливают последовательность запуска. 
+Файл target не должен быть пустым, рекомендуется добавить раздел [Unit] с информативными параметрами Description= и Documentation=. 
+[Unit]
+Description=Emergency Mode with Networking
+Requires=emergency.target systemd-networkd.service
+After=emergency.target systemd-networkd.service
+AllowIsolate=yes

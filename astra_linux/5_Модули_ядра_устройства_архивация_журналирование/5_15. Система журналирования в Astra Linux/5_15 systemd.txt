@@ -1,0 +1,19 @@
+root@srv1:/home/admilya# cat /etc/systemd/system/lesson_16.timer
+[Unit]
+Description=Image /etc/fstab every day
+[Timer]
+OnCalendar=*-*-* 03:00:00
+Persistent=true
+[Install]
+WantedBy=lesson_16.target
+
+
+
+root@srv1:/home/admilya# cat /etc/systemd/system/lesson_16.service
+[Unit]
+Description=Image /etc/fstab every day
+[Service]
+Type=oneshot
+ExecStart=/home/admilya/lesson_16.sh
+[Install]
+WantedBy=lesson_16.target

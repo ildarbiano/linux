@@ -1,0 +1,12 @@
+Что делает команда chmod 764 file?
+Назначает права доступа к файлу file
+7 (rwx) - права на чтение, запись и выполнение для "u" - пользователя
+6 (rw-) - права на чтение и запись для "g" - группы
+4 (r--) - права на чтение для "o" – остальных
+
+
+Пример со стенда:
+admilya@astra-net-terminal:~$ touch file
+admilya@astra-net-terminal:~$ chmod 764 file
+admilya@astra-net-terminal:~$ ls -l
+-rwxrw-r-- 1 admilya admilya    0 авг  4 13:53 file

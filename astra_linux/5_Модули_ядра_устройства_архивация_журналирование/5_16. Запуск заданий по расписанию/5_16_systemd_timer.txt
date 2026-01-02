@@ -1,0 +1,204 @@
+admilya@astra-net-terminal:~$ systemctl list-timers
+NEXT                         LEFT      LAST                         PASSED    UNIT                         ACTIVATES
+Thu 2025-08-21 19:04:08 MSK  6min left Thu 2025-08-21 18:02:26 MSK  55min ago anacron.timer                anacron.service
+Fri 2025-08-22 05:21:22 MSK  10h left  Thu 2025-08-21 11:25:03 MSK  7h ago    apt-daily.timer              apt-daily.service
+Fri 2025-08-22 05:35:13 MSK  10h left  Thu 2025-08-21 05:35:13 MSK  13h ago   systemd-tmpfiles-clean.timer systemd-tmpfiles-clean.service
+Fri 2025-08-22 06:16:05 MSK  11h left  Thu 2025-08-21 06:05:13 MSK  12h ago   apt-daily-upgrade.timer      apt-daily-upgrade.service
+4 timers listed.
+Pass --all to see loaded but inactive timers, too.
+
+root@astra-net-terminal:/home/admilya# touch /etc/systemd/system/lesson_16.service
+авг 23 11:04:55 astra-net-terminal systemd[1]: Started Lesson 16 service.
+root@astra-net-terminal:/home/admilya# cat /etc/systemd/system/lesson_16.service
+[Unit]
+Description=Lesson 16 service
+[Service]
+Type=oneshot
+ExecStart=/home/admilya/lesson_16.sh
+
+root@astra-net-terminal:/home/admilya# touch /etc/systemd/system/lesson_16.timer
+root@astra-net-terminal:/home/admilya# cat /etc/systemd/system/lesson_16.timer
+[Unit]
+Description=Lesson 16 backup
+[Timer]
+OnUnitActiveSec=10sec
+Unit=lesson_16.service
+
+
+root@astra-net-terminal:/home/admilya# systemctl daemon-reload
+root@astra-net-terminal:/home/admilya# systemctl restart lesson_16.service
+root@astra-net-terminal:/home/admilya# systemctl status lesson_16.service
+
+root@astra-net-terminal:/home/admilya# mcedit /etc/systemd/system/lesson_16.target
+root@astra-net-terminal:/home/admilya# cat /etc/systemd/system/lesson_16.target
+[Unit]
+Description=Lesson 16 target
+Requires=lesson_16.service
+#After=lesson_16.service
+
+
+
+root@astra-net-terminal:/home/admilya# touch /etc/systemd/lesson.timer
+root@astra-net-terminal:/home/admilya# ls -la /etc/systemd/
+итого 52
+drwxr-xr-x   5 root root  4096 авг 21 07:11 .
+drwxr-xr-x 109 root root 12288 авг 21 06:00 ..
+-rw-r--r--   1 root root  1014 сен 29  2022 journald.conf
+-rw-r--r--   1 root root     0 авг 21 07:11 lesson.timer
+-rw-r--r--   1 root root  1020 июл 25 15:43 logind.conf
+drwxr-xr-x   2 root root  4096 сен 29  2022 network
+-rw-r--r--   1 root root   655 сен 29  2022 resolved.conf
+drwxr-xr-x   9 root root  4096 авг 19 05:45 system
+-rw-r--r--   1 root root  1601 сен 29  2022 system.conf
+-rw-r--r--   1 root root   732 сен 29  2022 timesyncd.conf
+drwxr-xr-x   3 root root  4096 июл 25 18:34 user
+-rw-r--r--   1 root root  1130 сен 29  2022 user.conf
+
+
+root@astra-net-terminal:/home/admilya# systemctl daemon-reload
+root@astra-net-terminal:/home/admilya# systemctl restart lesson_16.service
+root@astra-net-terminal:/home/admilya# systemctl status lesson_16.service
+
+root@astra-net-terminal:/home/admilya# journalctl -u lesson_16.service
+-- Logs begin at Thu 2025-08-21 05:19:50 MSK, end at Sat 2025-08-23 11:21:56 MSK. --
+авг 23 11:04:55 astra-net-terminal systemd[1]: Starting Lesson 16 service...
+авг 23 11:04:55 astra-net-terminal systemd[1]: Started Lesson 16 service.
+авг 23 11:16:44 astra-net-terminal systemd[1]: Starting Lesson 16 service...
+авг 23 11:16:44 astra-net-terminal systemd[1]: Started Lesson 16 service.
+
+journalctl -S today -u lesson_16.service
+root@astra-net-terminal:/home/admilya# journalctl -S today -u lesson_16.service
+-- Logs begin at Thu 2025-08-21 05:19:50 MSK, end at Sat 2025-08-23 11:21:56 MSK. --
+авг 23 11:04:55 astra-net-terminal systemd[1]: Starting Lesson 16 service...
+авг 23 11:04:55 astra-net-terminal systemd[1]: Started Lesson 16 service.
+авг 23 11:16:44 astra-net-terminal systemd[1]: Starting Lesson 16 service...
+авг 23 11:16:44 astra-net-terminal systemd[1]: Started Lesson 16 service.
+
+root@astra-net-terminal:/home/admilya# systemctl list-units
+UNIT                                                                                      LOAD   ACTIVE SUB       DESCRIPTION
+acpid.service                                                                             loaded active running   ACPI event daemon
+console-setup.service                                                                     loaded active exited    Set console font and keymap
+cron.service                                                                              loaded active running   Regular background program processing daemo
+console-setup.service                                                                     loaded active exited    Set console font and keymap
+cron.service                                                                              loaded active running   Regular background program processing daemo
+dbus.service                                                                              loaded active running   D-Bus System Message Bus
+getty@tty1.service                                                                        loaded active running   Getty on tty1
+gpm.service                                                                               loaded active running   LSB: gpm sysv init script
+keyboard-setup.service                                                                    loaded active exited    Set the console keyboard layout
+kmod-static-nodes.service                                                                 loaded active exited    Create list of required static device nodes
+lvm2-lvmetad.service                                                                      loaded active running   LVM2 metadata daemon
+lvm2-monitor.service                                                                      loaded active exited    Monitoring of LVM2 mirrors, snapshots etc.
+ModemManager.service                                                                      loaded active running   Modem Manager
+networking.service                                                                        loaded active exited    Raise network interfaces
+NetworkManager-wait-online.service                                                        loaded active exited    Network Manager Wait Online
+NetworkManager.service                                                                    loaded active running   Network Manager
+nmbd.service                                                                              loaded active running   Samba NMB Daemon
+ntp.service                                                                               loaded active running   Network Time Service
+polkit.service                                                                            loaded active running   Authorization Manager
+quota.service                                                                             loaded active exited    Initial Check File System Quotas
+rsyslog.service                                                                           loaded active running   System Logging Service
+smbd.service                                                                              loaded active running   Samba SMB Daemon
+ssh.service                                                                               loaded active running   OpenBSD Secure Shell server
+systemd-fsck@dev-disk-by\x2duuid-3b22a075\x2d5452\x2d4eca\x2da333\x2dc22eb50409e0.service loaded active exited    File System Check on /dev/disk/by-uuid/3b22
+systemd-fsck@dev-mapper-test_vg\x2dT1.service                                             loaded active exited    File System Check on /dev/mapper/test_vg-T1
+systemd-journal-flush.service                                                             loaded active exited    Flush Journal to Persistent Storage
+systemd-journald.service                                                                  loaded active running   Journal Service
+systemd-logind.service                                                                    loaded active running   Login Service
+systemd-modules-load.service                                                              loaded active exited    Load Kernel Modules
+systemd-random-seed.service                                                               loaded active exited    Load/Save Random Seed
+systemd-remount-fs.service                                                                loaded active exited    Remount Root and Kernel File Systems
+systemd-sysctl.service                                                                    loaded active exited    Apply Kernel Variables
+systemd-tmpfiles-setup-dev.service                                                        loaded active exited    Create Static Device Nodes in /dev
+systemd-tmpfiles-setup.service                                                            loaded active exited    Create Volatile Files and Directories
+systemd-udev-trigger.service                                                              loaded active exited    udev Coldplug all Devices
+systemd-udevd.service                                                                     loaded active running   udev Kernel Device Manager
+systemd-update-utmp.service                                                               loaded active exited    Update UTMP about System Boot/Shutdown
+systemd-user-sessions.service                                                             loaded active exited    Permit User Sessions
+ufw.service                                                                               loaded active exited    Uncomplicated firewall
+user@1000.service                                                                         loaded active running   User Manager for UID 1000
+vsftpd.service                                                                            loaded active running   vsftpd FTP server
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------
+----------------------------------------------------------------
+admilya@astra-net-terminal:~$ sudo cat /etc/systemd/lesson.timer
+admilya@astra-net-terminal:~$ sudo cat /lib/systemd/system/*.timer
+admilya@astra-net-terminal:~$ ls -la /lib/systemd/system/*.timer
+
+find /lib/systemd/system/ -t file -name *.timer
+
+admilya@astra-net-terminal:~$ find /lib/systemd/system/ -type f -name *.timer
+/lib/systemd/system/anacron.timer
+/lib/systemd/system/systemd-tmpfiles-clean.timer
+/lib/systemd/system/apt-daily.timer
+/lib/systemd/system/apt-daily-upgrade.timer
+
+admilya@astra-net-terminal:~$ ls -la /lib/systemd/system/*.target
+
+
+admilya@astra-net-terminal:~$ sudo cat /lib/systemd/system/apt-daily-upgrade.timer
+[Unit]
+Description=Daily apt upgrade and clean activities
+After=apt-daily.timer
+
+[Timer]
+OnCalendar=*-*-* 6:00
+RandomizedDelaySec=60m
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+
+
+admilya@astra-net-terminal:~$ sudo cat /lib/systemd/system/poweroff.target
+#  This file is part of systemd.
+#  systemd is free software; you can redistribute it and/or modify it
+#  under the terms of the GNU Lesser General Public License as published by
+#  the Free Software Foundation; either version 2.1 of the License, or
+#  (at your option) any later version.
+
+[Unit]
+Description=Power-Off
+Documentation=man:systemd.special(7)
+DefaultDependencies=no
+Requires=systemd-poweroff.service
+After=systemd-poweroff.service
+AllowIsolate=yes
+JobTimeoutSec=30min
+JobTimeoutAction=poweroff-force
+
+[Install]
+Alias=ctrl-alt-del.target
+
+
+
+admilya@astra-net-terminal:~$ sudo cat /lib/systemd/system/anacron.service
+[Unit]
+Description=Run anacron jobs
+After=time-sync.target
+ConditionACPower=true
+Documentation=man:anacron man:anacrontab
+
+[Service]
+ExecStart=/usr/sbin/anacron -dsq
+IgnoreSIGPIPE=false
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+

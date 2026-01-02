@@ -1,0 +1,52 @@
+https://video.dion.vc/video/3b76f369-f00f-4e1e-a798-311d7825a95a
+
+sysfs
+systemd
+ls /sys/class/block		
+ls /etc/udev/rules.d/		правила udev
+lsusb
+sudo blkid
+/etc/fstab
+==============
+Samba SMB/CIFS	протокол		1/ способ поделиться файлами
+smb.conf	windows	доступ к ....	
+NFS		linux			2/ способ поделиться файлами. Сетевая папка
+mount -t nfs student@192.167.1.1:/mnt/share /media/network
+FTP-server				3/ способ поделиться файлами
+==============
+14. Архивация и сжатие данных
+tar		type archive		взять как они есть, но сжать с тем же размером
+==============					сжатие с "выжимом"				
+dd		клонировнаие дисков
+if		input file
+of		output file
+==============
+rsync		
+==============
+Журналирование
+systemd
+/var/log/messages		информация о работе ядра ОС и сервисов
+/var/log/syslog			системные сообщения от демонов и сервисов
+/var/log/auth.log		попытки аутентификации на системе
+/var/log/kern.log		сообщения о ядре сиситемы
+journalctl		из journald
+journalctl -p err	с фильтром?
+journalctl -p warn	с фильтром
+journalctl -t systemd	с фильтром
+================
+Ротация логов
+=============
+Расписание
+crontab			планирование
+systemd			планирование возможно !!!!! сделать ДЗ
+systemctl timer
+
+
+
+
+
+
+
+
+
+

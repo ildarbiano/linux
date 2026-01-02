@@ -1,0 +1,17 @@
+Практическое задание
+Практическое задание в уроке «Работа с текстовой информацией в ОС Astra Linux»
+Время выполнения: 20 мин
+Цель практической работы: Научиться работать с текстовой информацией в Linux
+
+Задачи:
+Перенаправьте вывод отфильтрованного файла /var/log/syslog по kernel в файл kern.txt в домашнюю директорию.
+Отфильтруйте полученный файл, заменив слово kernel на kern, и сохраните изменения.
+Перенаправьте вывод этого файла в kern-mod.txt так, чтобы остался столбец со временем и столбец с kern.
+admilya@astra-net-terminal:~$ sudo cat /var/log/syslog > kernel.txt
+admilya@astra-net-terminal:~$ sed 's/kernel/kern/g' kernel.txt > kern.txt
+admilya@astra-net-terminal:~$ awk '{print $3, $5}' kern.txt | grep kern > kern-mod.txt
+ 
+
+
+Как сдать работу на проверку?
+Прикрепите полученные файлы.

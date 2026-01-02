@@ -1,0 +1,15 @@
+admilya@astra-net-terminal:~$ sudo ifconfig eth0 up
+admilya@astra-net-terminal:~$ sudo dhclient
+admilya@astra-net-terminal:~$ ip addr show eth0
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 08:00:27:7e:ad:3a brd ff:ff:ff:ff:ff:ff
+    inet 192.168.0.22/24 brd 192.168.0.255 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::a00:27ff:fe7e:ad3a/64 scope link
+       valid_lft forever preferred_lft forever
+
+admilya@astra-net-terminal:~$ nmcli connection show
+NAME                    UUID                                  TYPE      DEVICE
+eth0                    3ba12da2-a5bd-4ba9-b622-210bd9b6755d  ethernet  eth0
+Проводное соединение 1  8970c2dd-80ee-3768-9a56-4f7b2e738a32  ethernet  --

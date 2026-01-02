@@ -1,0 +1,41 @@
+admilya@astra-net-terminal:~$ rm file
+admilya@astra-net-terminal:~$ ls -la
+итого 72
+drwx------ 8 admilya admilya  4096 авг  4 14:57 .
+drwxr-xr-x 3 root    root     4096 июл 25 18:42 ..
+-rw-r--r-- 1 admilya admilya 10240 авг  4 14:45 arch.tar
+-rw------- 1 admilya admilya  5933 авг  4 07:00 .bash_history
+-rw-r--r-- 1 admilya admilya   220 июл 25 18:42 .bash_logout
+-rw-r--r-- 1 admilya admilya  3526 июл 25 18:42 .bashrc
+drwx------ 3 admilya admilya  4096 июл 31 13:13 .cache
+drwx------ 3 admilya admilya  4096 июл 31 13:13 .config
+drwxr-xr-x 3 admilya admilya  4096 авг  4 07:06 dev
+-rwxr-xr-x 1 admilya admilya     0 авг  4 13:55 file.sh
+drwx------ 3 admilya admilya  4096 июл 31 13:13 .local
+drwxr-xr-x 3 admilya admilya  4096 авг  4 07:06 main
+-rw-r--r-- 1 admilya admilya   675 июл 25 18:42 .profile
+drwxr-xr-x 3 admilya admilya  4096 авг  4 07:06 update
+-rw------- 1 admilya admilya  1063 июл 26 19:50 .viminfo
+-rw------- 1 admilya admilya    50 авг  4 07:00 .Xauthority
+admilya@astra-net-terminal:~$ tar -xvf arch.tar file
+file
+admilya@astra-net-terminal:~$ ls -la
+итого 72
+drwx------ 8 admilya admilya  4096 авг  4 14:57 .
+drwxr-xr-x 3 root    root     4096 июл 25 18:42 ..
+-rw-r--r-- 1 admilya admilya 10240 авг  4 14:45 arch.tar
+-rw------- 1 admilya admilya  5933 авг  4 07:00 .bash_history
+-rw-r--r-- 1 admilya admilya   220 июл 25 18:42 .bash_logout
+-rw-r--r-- 1 admilya admilya  3526 июл 25 18:42 .bashrc
+drwx------ 3 admilya admilya  4096 июл 31 13:13 .cache
+drwx------ 3 admilya admilya  4096 июл 31 13:13 .config
+drwxr-xr-x 3 admilya admilya  4096 авг  4 07:06 dev
+-rwxr--r-- 1 admilya admilya     0 авг  4 13:53 file
+-rwxr-xr-x 1 admilya admilya     0 авг  4 13:55 file.sh
+drwx------ 3 admilya admilya  4096 июл 31 13:13 .local
+drwxr-xr-x 3 admilya admilya  4096 авг  4 07:06 main
+-rw-r--r-- 1 admilya admilya   675 июл 25 18:42 .profile
+drwxr-xr-x 3 admilya admilya  4096 авг  4 07:06 update
+-rw------- 1 admilya admilya  1063 июл 26 19:50 .viminfo
+-rw------- 1 admilya admilya    50 авг  4 07:00 .Xauthority
+ 

@@ -1,0 +1,8 @@
+Нужно ли на исполняемый файл делать chmod +x file.sh ?
+если нужно установить права на выполнение скрипта с именем file.sh, то да. После выполнения этой команды скрипт file.sh будет иметь права на выполнение для всех пользователей системы. Это позволит запускать скрипт, как исполняемый файл.
+
+Пример со стенда:
+admilya@astra-net-terminal:~$ touch file.sh
+admilya@astra-net-terminal:~$ chmod +x file.sh
+admilya@astra-net-terminal:~$ ls -l
+-rwxr-xr-x 1 admilya admilya    0 авг  4 13:55 file.sh

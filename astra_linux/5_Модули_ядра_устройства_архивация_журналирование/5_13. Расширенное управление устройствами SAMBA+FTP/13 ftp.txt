@@ -1,0 +1,100 @@
+admilya@astra-net-terminal:~$ sudo apt install vsftpd
+admilya@astra-net-terminal:~$ sudo systemctl status vsftpd
+admilya@astra-net-terminal:~$ sudo cp /etc/vsftpd.conf /etc/vsftpd.conf.backup
+admilya@astra-net-terminal:~$ sudo cat /etc/vsftpd.conf
+listen=YES
+listen_ipv6=NO
+anonymous_enable=YES
+no_anon_password=YES
+local_enable=yes
+anon_root=/DATA/ftp-share/
+write_enable=YES
+anon_upload_enable=YES
+anon_mkdir_write_enable=YES
+use_localtime=YES
+xferlog_enable=YES
+xferlog_file=/var/log/vsftpd.log
+secure_chroot_dir=/var/run/vsftpd/empty
+pam_sevice_name=vsftpd
+rsa_cert_file=/etc/ssl/certs/ssl-crt-sbakeoil.pem
+rsa_private_key=/etc/ssl/private/ssl-crt-sbakeoil.key
+
+admilya@astra-net-terminal:~$ sudo mkdir /DATA/ftp-share/
+admilya@astra-net-terminal:~$ sudo chown root:ftp /DATA/ftp-share/
+admilya@astra-net-terminal:~$ sudo chmod 755 /DATA/ftp-share/
+admilya@astra-net-terminal:~$ sudo mkdir -p /DATA/ftp-share/public
+admilya@astra-net-terminal:~$ sudo chmod 777 /DATA/ftp-share/public/
+
+admilya@astra-net-terminal:~$ sudo cat /etc/passwd
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+bin:x:2:2:bin:/bin:/usr/sbin/nologin
+sys:x:3:3:sys:/dev:/usr/sbin/nologin
+sync:x:4:65534:sync:/bin:/bin/sync
+games:x:5:60:games:/usr/games:/usr/sbin/nologin
+man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin
+gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+systemd-timesync:x:100:102:systemd Time Synchronization,,,:/run/systemd:/bin/false
+systemd-network:x:101:103:systemd Network Management,,,:/run/systemd/netif:/bin/false
+systemd-resolve:x:102:104:systemd Resolver,,,:/run/systemd/resolve:/bin/false
+systemd-bus-proxy:x:103:105:systemd Bus Proxy,,,:/run/systemd:/bin/false
+_apt:x:104:65534::/nonexistent:/bin/false
+Debian-exim:x:105:109::/var/spool/exim4:/bin/false
+ntp:x:106:110::/nonexistent:/bin/false
+messagebus:x:107:111::/var/run/dbus:/bin/false
+logcheck:x:108:112:logcheck system account,,,:/var/lib/logcheck:/bin/false
+admilya:x:1000:1000:,,,:/home/admilya:/bin/bash
+sshd:x:109:65534::/run/sshd:/usr/sbin/nologin
+dnsmasq:x:110:65534:dnsmasq,,,:/var/lib/misc:/bin/false
+user-samba:x:1001:1002::/home/user-samba:/usr/sbin/nologin
+user_samba:x:1002:1004::/home/user_samba:/usr/sbin/nologin
+ftp:x:111:116:ftp daemon,,,:/DATA/ftp-share:/bin/false
+
+admilya@astra-net-terminal:~$ sudo systemctl restart vsftpd
+admilya@astra-net-terminal:~$ sudo systemctl status vsftpd
+● vsftpd.service - vsftpd FTP server
+-----------------------------------
+listen=YES
+listen_ipv6=NO
+anonymous_enable=YES
+no_anon_password=YES
+local_enable=yes
+anon_root=/DATA/ftp_share/
+write_enable=YES
+anon_upload_enable=YES
+anon_mkdir_write_enable=YES
+use_localtime=YES
+xferlog_enable=YES
+xferlog_file=/var/log/vsftpd.log
+secure_chroot_dir=/var/run/vsftpd/empty
+pam_service_name=vsftpd
+rsa_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem
+rsa_private_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
+ssl_enable=NO
+---------------
+admilya@astra-net-terminal:~$ sudo systemctl status vsftpd
+● vsftpd.service - vsftpd FTP server
+   Loaded: loaded (/lib/systemd/system/vsftpd.service; enabled; vendor preset: enabled)
+   Active: active (running) since Tue 2025-08-19 11:58:08 MSK; 7s ago
+
+
+admilya@astra-net-terminal:~$ sudo reboot
+anonymous_enable=YES
+
+anon_upload_enable=YES
+
+ftp://[!][user[:pass]@]machine[:port][remote-dir] 
+ftp://!192.168.0.42
+ftp://ftp.nuclecu.unam.mx/linux/local
+
+

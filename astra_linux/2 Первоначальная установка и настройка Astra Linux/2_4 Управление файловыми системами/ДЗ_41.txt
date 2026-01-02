@@ -1,0 +1,34 @@
+root@astra-net-terminal:/home/admilya# lsblk -f
+NAME                                FSTYPE      LABEL UUID                                   MOUNTPOINT
+sda
+├─sda1                              ext2              3b22a075-5452-4eca-a333-c22eb50409e0   /boot
+├─sda2
+└─sda5                              LVM2_member       pD0ARM-WRXm-3UVG-h3wr-6TJ4-Z0jh-HRUyO2
+  ├─astra--net--terminal--vg-root   ext4              713ac7e8-bcc8-4b77-b78e-b60c3c893f29   /
+  └─astra--net--terminal--vg-swap_1 swap              dd80707b-c190-4f6d-98c9-38b59c1c580f   [SWAP]
+sdb
+├─sdb1                              LVM2_member       t0mQ7S-lhsK-Wys5-70O0-eGvl-D0CT-rAXEYT
+├─sdb2                              LVM2_member       eNRDuA-RJsf-KYuQ-uCtL-Lz54-P5RY-PPsPWE
+│ └─test_vg-T1                      ext4              a691ddd7-0fda-42cd-9765-30e0a80be089   /data/less24
+└─sdb3                              LVM2_member       e3ZmaH-SeGo-yc1u-VTQj-bf1Q-vhkG-lsQoAx
+sr0
+
+
+root@astra-net-terminal:/home/admilya# lvs
+  LV     VG                    Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  root   astra-net-terminal-vg -wi-ao---- 20,28g
+  swap_1 astra-net-terminal-vg -wi-ao----  4,00g
+  T1     test_vg               -wi-ao----  6,00g
+
+
+root@astra-net-terminal:/home/admilya# df -hT
+Файловая система                          Тип      Размер Использовано  Дост Использовано% Cмонтировано в
+udev                                      devtmpfs   1,9G            0  1,9G            0% /dev
+tmpfs                                     tmpfs      393M          18M  375M            5% /run
+/dev/mapper/astra--net--terminal--vg-root ext4        20G         4,5G   15G           24% /
+tmpfs                                     tmpfs      2,0G            0  2,0G            0% /dev/shm
+tmpfs                                     tmpfs      5,0M            0  5,0M            0% /run/lock
+tmpfs                                     tmpfs      2,0G            0  2,0G            0% /sys/fs/cgroup
+/dev/sda1                                 ext2       719M          78M  606M           12% /boot
+tmpfs                                     tmpfs      393M            0  393M            0% /run/user/1000
+/dev/mapper/test_vg-T1                    ext4       5,9G          24K  5,6G            1% /data/less24

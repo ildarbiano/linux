@@ -1,0 +1,122 @@
+http://192.168.0.1/								router
+inet 192.168.0.57/24 brd 192.168.0.255 scope global eth0
+
+sudo ip link set enp0s3 up							Включить интерфейс
+sudo ip addr add 192.168.1.7/255.255.255.0 broadcast 192.168.1.255 dev enp0s3	Установить IP-адрес, маску сети и broadcast-адрес для интерфейса.
+sudo ip route add default via 192.168.1.1					Указать IP-адрес шлюза.
+sudo service networking restart							После настройки нужно перезапустить сетевой сервис.
+systemctl status networking.service		ошибки при рестарте сервиса
+авг 25 12:36:55 srv1.test.ru ifup[8646]: Not enough information: "dev" argument is required.
+авг 25 12:36:55 srv1.test.ru ifup[8646]: ifup: failed to bring up eth0
+
+
+netstat -nltp					статистика адресов и соединений, которые LISTEN
+
+cat /etc/network/interfaces			конфигурационный файл для сетевых интерфейсов. Он используется службой networking, которая управляет сетевыми интерфейсами с использованием системных файлов настроек/. В некоторых случаях рекомендуется использовать файл /etc/dhcpcd.conf, а не /etc/network/interfaces.
+auto lo						# указывает, какой интерфейс должны быть запущены при загрузке системы. 
+iface eth0 inet static				# указывает на то, что далее будут настройки интерфейса 
+address 192.168.111.111  			# адрес компьютера  
+netmask 255.255.255.0  				# маска  
+gateway 192.168.0.1  				# шлюз  
+dns-search srv1.test.ru				# Имя домена
+-------
+auto lo				# Строка «auto lo» в файле /etc/network/interfaces означает, что интерфейс lo поднимается автоматически при загрузке системы  
+iface lo inet loopback		# удалять интерфейс локальной петли не стоит, некоторые службы от этого сходят с ума и начинают выдавать весьма странные ошибки
+auto eth0			# означает, что интерфейс eth0 поднимается автоматически при загрузке системы  
+iface eth0 inet static		# указывает на то, что далее будут настройки интерфейса eth0
+    address 192.168.0.44	# IPv4-адрес компьютера
+    netmask 255.255.255.0	# Маска подсети
+    gateway 192.168.0.1         # В качестве шлюза 
+    network 192.168.0.0         # Указываем сеть, это обязательно для работы в составе ALD
+    broadcast 192.168.0.255     # Сервер ALD начиная с Astra 1.5 выводит ошибку, если не видит этого параметра в настройках сети.
+    dns-nameservers 192.168.0.1 # Тут через пробел можно перечислить ВСЕ DNS-серверы сети
+    dns-search DOMAIN.NET       # Имя домена ALD
+
+
+====================================================================
+iptables -L					Просмотр текущих правил
+iptables -A INPUT -s <IP-адрес> -j DROP 	(заменить <IP-адрес> на адрес, который нужно заблокировать). Добавляет правило, которое блокирует все входящие пакеты от указанного IP-адреса
+/etc/iptables.rules				все изменения, внесённые с помощью iptables, будут сброшены после перезагрузки системы. Чтобы сделать изменения постоянными, можно использовать команды: iptables-save > /etc/iptables.rules для сохранения текущих правил и iptables-restore < /etc/iptables.rules для их восстановления.
+
+
+====== ubuntu ==========================
+				ip route | grep default | awk '{print $3}'
+ilya@client-ubuntu:~$ 		ip route | grep default
+default via 192.168.0.1 dev enp0s3 proto dhcp src 192.168.0.80 metric 100
+
+ilya@client-ubuntu:~$ 		sudo cat /etc/netplan/00-installer-config.yaml
+# This is the network config written by 'subiquity'
+network:
+  ethernets:
+    enp0s3:
+      dhcp4: true
+  version: 2
+
+--------
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    enp0s3:
+      dhcp4: no
+      dhcp6: no
+      addresses: [192.168.0.33/24]
+      routes:
+        - to: default
+          via: 192.168.0.1
+      nameservers:
+        addresses: [8.8.8.8, 1.1.1.1]
+--------------------------------------------------------------------------------------
+ilya@client-ubuntu:~$ 			sudo netplan generate
+** (generate:1204): WARNING **: 08:36:55.805: `gateway4` has been deprecated, use default routes instead.
+See the 'Default routes' section of the documentation for more details.
+Что это значит?
+gateway4 - старый параметр для указания IPv4 шлюза по умолчанию
+В новых версиях Netplan его заменили на более универсальный подход
+Параметр всё ещё работает, но считается устаревшим и может быть удалён в будущем
+Как исправить?
+Замените старый формат на новый:
+gateway4: 192.168.0.1
+на
+routes:
+        - to: default
+          via: 192.168.1.1
+------------------------ Применить изменения ----------------------------------------------------------------
+						sudo netplan try		Тестовое применение (откат через 120 секунд)	bash Нажмите Enter для подтверждения после проверки связи
+						sudo netplan apply		Применяем окончательно				bash
+Происзодит потеря соединения и по новому адресу не пускает. Приходится откатываться через консоль VMBox
+
+
+======= сканирование подсети на адреса =====
+sudo apt update
+sudo apt install nmap
+ilya@client-ubuntu:~$ 			nmap -sn 192.168.0.1/24
+					nmap -sn 192.168.1.1-100	- Проверка конкретного диапазона Только первые 100 адресов	bash
+ilya@client-ubuntu:~$ 			networkctl status		- Проверить текущую сетевую конфигурацию			bash
+●        State: routable
+  Online state: online
+       Address: 192.168.0.83 on enp0s3
+                172.17.0.1 on docker0
+                fe80::a00:27ff:fe02:7905 on enp0s3
+       Gateway: 192.168.0.1 on enp0s3
+           DNS: 77.37.251.33
+                77.37.255.30
+                192.168.0.1
+Sep 28 08:18:31 client-ubuntu systemd-networkd[465]: lo: Gained carrier
+Sep 28 08:18:31 client-ubuntu systemd-networkd[465]: Enumeration completed
+Sep 28 08:18:31 client-ubuntu systemd[1]: Started Network Configuration.
+Sep 28 08:18:31 client-ubuntu systemd[1]: Starting Wait for Network to be Configured...
+Sep 28 08:18:31 client-ubuntu systemd-networkd[465]: enp0s3: Link UP
+Sep 28 08:18:31 client-ubuntu systemd-networkd[465]: enp0s3: Gained carrier
+Sep 28 08:18:33 client-ubuntu systemd-networkd[465]: enp0s3: Gained IPv6LL
+Sep 28 08:18:33 client-ubuntu systemd-networkd[465]: enp0s3: DHCPv4 address 192.168.0.83/24 via 192.168.0.1
+Sep 28 08:18:33 client-ubuntu systemd[1]: Finished Wait for Network to be Configured.
+Sep 28 08:18:38 client-ubuntu systemd-networkd[465]: docker0: Link UP
+
+
+ilya@client-ubuntu:~$ 			ip route show dev enp0s3	- Узнать шлюз для конкретного интерфейса	bash (замените enp0s3 на текущий интерфейс)
+default via 192.168.0.1 proto dhcp src 192.168.0.83 metric 100
+77.37.251.33 via 192.168.0.1 proto dhcp src 192.168.0.83 metric 100
+77.37.255.30 via 192.168.0.1 proto dhcp src 192.168.0.83 metric 100
+192.168.0.0/24 proto kernel scope link src 192.168.0.83 metric 100
+192.168.0.1 proto dhcp scope link src 192.168.0.83 metric 100

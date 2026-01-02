@@ -1,0 +1,85 @@
+root@astra-net-terminal:/home/admilya# tail -f /var/log/vsftpd.log
+
+root@astra-net-terminal:/home/admilya# cat /etc/logrotate.conf
+# see "man logrotate" for details
+# rotate log files weekly
+weekly
+
+# keep 4 weeks worth of backlogs
+rotate 4
+
+# create new (empty) log files after rotating old ones
+create
+
+# uncomment this if you want your log files compressed
+#compress
+
+# packages drop log rotation information into this directory
+include /etc/logrotate.d
+
+# no packages own wtmp, or btmp -- we'll rotate them here
+/var/log/wtmp {
+    missingok
+    monthly
+    create 0664 root utmp
+    rotate 1
+}
+
+/var/log/btmp {
+    missingok
+    monthly
+    create 0660 root utmp
+    rotate 1
+}
+
+/var/log/vsftpd.log {
+    missingok
+    create 0660 root root
+    rotate 5
+    daily
+}
+============================
+1. Проверить конфигурацию:
+logrotate -d /path/to/config_file 		тестирования конфигурации без фактической ротации.
+logrotate -f /path/to/config_file 		принудительная ротации (с осторожностью).
+2. Понимание опций:
+size: 		Определяет размер лог-файла, при достижении которого выполняется ротация. Например, size 100M.
+create: 	Указывает, что нужно создать новый лог-файл после ротации, и задает его права, владельца и группу. Например, create 0644 root root.
+rotate: 	Определяет количество старых лог-файлов, которые нужно хранить.
+missingok: 	Если лог-файл отсутствует, то ротация не будет выдавать ошибку.
+notifempty:	Если лог-файл пустой, то ротация не будет выполнена.
+sharedscripts: 	Позволяет выполнять скрипты после ротации всех файлов, указанных в секции.
+postrotate: 	Указывает команду, которая будет выполнена после ротации всех файлов в секции.
+
+----------
+rotating pattern: /var/log/vsftpd.log
+ weekly (4 rotations)
+empty log files are not rotated, old logs are removed
+considering log /var/log/vsftpd.log
+  Now: 2025-08-19 09:21
+  Last rotated at 2025-08-19 09:00
+  log does not need rotating (log has been already rotated)
+
+rotating pattern: /var/log/vsftpd.log  hourly (5 rotations)
+empty log files are rotated, old logs are removed
+No logs found. Rotation not needed.
+
+
+
+===============
+root@astra-net-terminal:/home/admilya# cat /etc/logrotate.d/vsftpd
+/var/log/vsftpd.log
+{
+        create 640 root adm
+
+        # ftpd doesn't handle SIGHUP properly
+        missingok
+        notifempty
+        rotate 4
+        weekly
+}
+
+
+root@astra-net-terminal:/home/admilya# logrotate /etc/logrotate.conf
+error: vsftpd.backup:1 duplicate log entry for /var/log/vsftpd.log
+error: /etc/logrotate.conf:32 duplicate log entry for /var/log/vsftpd.log

@@ -1,0 +1,25 @@
+Что делает команда setfacl -m u:max:rw /etc/fstab ?
+Модифицируются права на файл fstab 
+Когда пользователю max нужен доступ к файлу /etc/fstab на запись и чтение, а он принадлежат к другой группе, помогут расширенные права доступа или Access List (acl)
+
+Пример со стенда:
+admilya@astra-net-terminal:~$ sudo getfacl /etc/fstab
+getfacl: Removing leading '/' from absolute path names
+# file: etc/fstab
+# owner: root
+# group: root
+user::rw-
+group::r--
+other::r--
+ 
+admilya@astra-net-terminal:~$ sudo setfacl -m u:admilya:rw /etc/fstab
+admilya@astra-net-terminal:~$ sudo getfacl /etc/fstab
+getfacl: Removing leading '/' from absolute path names
+# file: etc/fstab
+# owner: root
+# group: root
+user::rw-
+user:admilya:rw-
+group::r--
+mask::rw-
+other::r--

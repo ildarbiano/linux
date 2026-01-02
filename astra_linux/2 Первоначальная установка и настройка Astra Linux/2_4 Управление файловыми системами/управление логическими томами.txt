@@ -1,0 +1,375 @@
+root@astra-net-terminal:/home/admilya# lsblk -f
+	NAME                                FSTYPE      LABEL UUID                                   MOUNTPOINT
+	sda
+	├─sda1                              ext2              3b22a075-5452-4eca-a333-c22eb50409e0   /boot
+	├─sda2
+	└─sda5                              LVM2_member       pD0ARM-WRXm-3UVG-h3wr-6TJ4-Z0jh-HRUyO2
+	  ├─astra--net--terminal--vg-root   ext4              713ac7e8-bcc8-4b77-b78e-b60c3c893f29   /
+	  └─astra--net--terminal--vg-swap_1 swap              dd80707b-c190-4f6d-98c9-38b59c1c580f   [SWAP]
+	sdb
+	├─sdb1
+	└─sdb2                              ext4              2e453c2c-d493-4dfc-a3f4-2dee5728c0cd
+	------------------------------------------------------------------------------------------
+очистка диска от разделов
+-------------------------
+root@astra-net-terminal:/home/admilya# fdisk /dev/sdb
+	Добро пожаловать в fdisk (util-linux 2.29.2).
+	Изменения останутся только в памяти до тех пор, пока вы не решите записать их.
+	Будьте внимательны, используя команду write.
+	Команда (m для справки): d
+	Выбранный раздел 1
+	Раздел 1 был удален.
+	Команда (m для справки): w
+	Таблица разделов была изменена.
+	Вызывается ioctl() для перечитывания таблицы разделов.
+	Синхронизируются диски.
+root@astra-net-terminal:/home/admilya# lsblk -f
+	NAME                                FSTYPE      LABEL UUID                                   MOUNTPOINT
+	sda
+	├─sda1                              ext2              3b22a075-5452-4eca-a333-c22eb50409e0   /boot
+	├─sda2
+	└─sda5                              LVM2_member       pD0ARM-WRXm-3UVG-h3wr-6TJ4-Z0jh-HRUyO2
+	  ├─astra--net--terminal--vg-root   ext4              713ac7e8-bcc8-4b77-b78e-b60c3c893f29   /
+	  └─astra--net--terminal--vg-swap_1 swap              dd80707b-c190-4f6d-98c9-38b59c1c580f   [SWAP]
+	sdb
+	sr0
+	--
+пересоздание разделов диска
+----------------------------
+root@astra-net-terminal:/home/admilya# fdisk /dev/sdb
+	Добро пожаловать в fdisk (util-linux 2.29.2).
+	Изменения останутся только в памяти до тех пор, пока вы не решите записать их.
+	Будьте внимательны, используя команду write.
+	Команда (m для справки): o
+	Создана новая метка DOS с идентификатором 0x65167eab.
+	Команда (m для справки): print
+	Диск /dev/sdb: 15 GiB, 16106127360 байт, 31457280 секторов
+	Единицы: секторов по 1 * 512 = 512 байт
+	Размер сектора (логический/физический): 512 байт / 512 байт
+	Размер I/O (минимальный/оптимальный): 512 байт / 512 байт
+	Тип метки диска: dos
+	Идентификатор диска: 0x65167eab
+	Команда (m для справки): n
+	Тип раздела
+	   p   основной (0 первичный, 0 расширеный, 4 свободно)
+	   e   расширенный (контейнер для логических разделов)
+	Выберите (по умолчанию - p):
+	Используется ответ по умолчанию p
+	Номер раздела (1-4, default 1):
+	Первый сектор (2048-31457279, default 2048):
+	Последний сектор + число секторов или + размер{K,M,G,T,P} (2048-31457279, default 31457279		<<<<<<<<<<< полностью
+	Последний сектор + число секторов или + размер{K,M,G,T,P} (2048-31457279, default 31457279 +6GiB      	<<<<<< только части <<<<<<<
+	Создан новый раздел 1 с типом 'Linux' и размером 15 GiB.
+	Команда (m для справки): w
+	Таблица разделов была изменена.
+	Вызывается ioctl() для перечитывания таблицы разделов.
+	Синхронизируются диски.
+	--------------------------
+после разметки диска, UUID не появляется. То есь физического ID не присваивается.
+---------------------------------------------------------------------------------
+root@astra-net-terminal:/home/admilya# lsblk -f
+	NAME                                FSTYPE      LABEL UUID                                   MOUNTPOINT
+	sda
+	├─sda1                              ext2              3b22a075-5452-4eca-a333-c22eb50409e0   /boot
+	├─sda2
+	└─sda5                              LVM2_member       pD0ARM-WRXm-3UVG-h3wr-6TJ4-Z0jh-HRUyO2
+	  ├─astra--net--terminal--vg-root   ext4              713ac7e8-bcc8-4b77-b78e-b60c3c893f29   /
+	  └─astra--net--terminal--vg-swap_1 swap              dd80707b-c190-4f6d-98c9-38b59c1c580f   [SWAP]
+	sdb
+	└─sdb1
+	sr0
+----------
+Если диск закончился, то, как примонтировать дополнительный объём !?
+LVM	управление логическими дисками LV на одном или нескольких PV, без переформатирования (физической переразметки диска)
+LVM	позволяет изменять размеры дисков, перемещать их без остановки процессов и\или размонтирования
+LVM	позволяет "на лету" зеркалировнаие, резервное копирование во время работы сиистемы. 
+LVM	читаемые имена
+LVM	управляет тремя сущностями: Phisiscal (PV), Group phisical (VG), Logical (LV)
+--------------------------------------------------------------------
+создание физических томов
+-------------------------
+root@astra-net-terminal:/home/admilya# pvcreate /dev/sdb1 /dev/sdb2 /dev/sdb3
+	  Physical volume "/dev/sdb1" successfully created.
+	  Physical volume "/dev/sdb2" successfully created.
+	  Physical volume "/dev/sdb3" successfully created.
+	-------------------------------------------------
+появился UUID у размеченного диска
+-------------
+root@astra-net-terminal:/home/admilya# lsblk -f
+	NAME                                FSTYPE      LABEL UUID                                   MOUNTPOINT
+	sda
+	├─sda1                              ext2              3b22a075-5452-4eca-a333-c22eb50409e0   /boot
+	├─sda2
+	└─sda5                              LVM2_member       pD0ARM-WRXm-3UVG-h3wr-6TJ4-Z0jh-HRUyO2
+	  ├─astra--net--terminal--vg-root   ext4              713ac7e8-bcc8-4b77-b78e-b60c3c893f29   /
+	  └─astra--net--terminal--vg-swap_1 swap              dd80707b-c190-4f6d-98c9-38b59c1c580f   [SWAP]
+	sdb
+	└─sdb1                              LVM2_member       G8CeP6-Jdzk-v9nJ-oANV-Hgn2-OPSb-2mqiTy
+	sr0
+	---
+проверка создания 
+pvs 		- information about physical volumes
+pvdisplay	- attributes of a physical volume
+-----------------
+root@astra-net-terminal:/home/admilya# pvs
+  PV         VG                    Fmt  Attr PSize  PFree
+  /dev/sda5  astra-net-terminal-vg lvm2 a--  24,28g    0
+  /dev/sdb1                        lvm2 ---   6,00g 6,00g
+root@astra-net-terminal:/home/admilya# pvdisplay
+  --- Physical volume ---
+  PV Name               /dev/sda5
+  VG Name               astra-net-terminal-vg
+  PV Size               24,28 GiB / not usable 2,00 MiB
+  Allocatable           yes (but full)
+  PE Size               4,00 MiB
+  Total PE              6216
+  Free PE               0
+  Allocated PE          6216
+  PV UUID               pD0ARM-WRXm-3UVG-h3wr-6TJ4-Z0jh-HRUyO2
+
+  "/dev/sdb1" is a new physical volume of "6,00 GiB"
+  --- NEW Physical volume ---
+  PV Name               /dev/sdb1
+  VG Name
+  PV Size               6,00 GiB
+  Allocatable           NO
+  PE Size               0
+  Total PE              0
+  Free PE               0
+  Allocated PE          0
+  PV UUID               G8CeP6-Jdzk-v9nJ-oANV-Hgn2-OPSb-2mqiTy
+	---------------------------------------------------
+создать группу VG
+-----------------
+root@astra-net-terminal:/home/admilya# pvcreate /dev/sdb1 /dev/sdb2 /dev/sdb3
+  Physical volume "/dev/sdb1" successfully created.
+  Physical volume "/dev/sdb2" successfully created.
+  Physical volume "/dev/sdb3" successfully created.
+root@astra-net-terminal:/home/admilya# lsblk -f
+	NAME                                FSTYPE      LABEL UUID                                   MOUNTPOINT
+	sda
+	├─sda1                              ext2              3b22a075-5452-4eca-a333-c22eb50409e0   /boot
+	├─sda2
+	└─sda5                              LVM2_member       pD0ARM-WRXm-3UVG-h3wr-6TJ4-Z0jh-HRUyO2
+	  ├─astra--net--terminal--vg-root   ext4              713ac7e8-bcc8-4b77-b78e-b60c3c893f29   /
+	  └─astra--net--terminal--vg-swap_1 swap              dd80707b-c190-4f6d-98c9-38b59c1c580f   [SWAP]
+	sdb
+	├─sdb1                              LVM2_member       ILdb7D-08vR-ZNfJ-Bv08-GQyB-h8y4-W1TluK
+	├─sdb2                              LVM2_member       N3SECU-9JAC-8J1H-muSl-0vpA-2IXu-brabxP
+	└─sdb3                              LVM2_member       CaKRAz-PlJK-IFAZ-ib1q-IENd-BLjd-SMhTAp
+	sr0
+root@astra-net-terminal:/home/admilya# pvs
+  PV         VG                    Fmt  Attr PSize  PFree
+  /dev/sda5  astra-net-terminal-vg lvm2 a--  24,28g    0
+  /dev/sdb1                        lvm2 ---   6,00g 6,00g
+  /dev/sdb2                        lvm2 ---   5,00g 5,00g
+  /dev/sdb3                        lvm2 ---   2,00g 2,00g
+	-------------------------------------------------
+создание группы test_vg из трёх pv
+----------------------------------
+root@astra-net-terminal:/home/admilya# vgcreate test_vg /dev/sdb1 /dev/sdb2 /dev/sdb3
+	  Volume group "test_vg" successfully created
+root@astra-net-terminal:/home/admilya# vgs
+  VG                    #PV #LV #SN Attr   VSize  VFree
+  astra-net-terminal-vg   1   2   0 wz--n- 24,28g     0
+  test_vg                 3   0   0 wz--n- 12,99g 12,99g
+root@astra-net-terminal:/home/admilya# vgdisplay
+  --- Volume group ---
+  VG Name               test_vg
+  System ID
+  Format                lvm2
+  Metadata Areas        3
+  Metadata Sequence No  1
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                0
+  Open LV               0
+  Max PV                0
+  Cur PV                3
+  Act PV                3
+  VG Size               12,99 GiB
+  PE Size               4,00 MiB
+  Total PE              3325
+  Alloc PE / Size       0 / 0
+  Free  PE / Size       3325 / 12,99 GiB
+  VG UUID               9dOB3d-yTXn-1E4Y-k5PW-zPLH-tgWz-yvOVqf
+
+  --- Volume group ---
+  VG Name               astra-net-terminal-vg
+  System ID
+  Format                lvm2
+  Metadata Areas        1
+  Metadata Sequence No  3
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                2
+  Open LV               2
+  Max PV                0
+  Cur PV                1
+  Act PV                1
+  VG Size               24,28 GiB
+  PE Size               4,00 MiB
+  Total PE              6216
+  Alloc PE / Size       6216 / 24,28 GiB
+  Free  PE / Size       0 / 0
+  VG UUID               1rkCbk-6RlK-oVC9-SncH-SW8S-AMeM-cKjw3K
+	------------------------------------------------------
+создание логического раздела на полный объём PV
+-----------------------------------------------
+root@astra-net-terminal:/home/admilya# lvcreate -l +100%FREE -n T1 test_vg
+	  Logical volume "T1" created.
+	-----------------------------
+root@astra-net-terminal:/home/admilya# lvs
+	  LV     VG                    Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+	  root   astra-net-terminal-vg -wi-ao---- 20,28g
+	  swap_1 astra-net-terminal-vg -wi-ao----  4,00g
+	  T1     test_vg               -wi-a----- 13,99g
+	------------------------------------------------
+root@astra-net-terminal:/home/admilya# lvdisplay
+  --- Logical volume ---
+  LV Path                /dev/test_vg/T1
+  LV Name                T1
+  VG Name                test_vg
+  LV UUID                lGBB2Q-D93f-o7jB-G2z1-tshe-L4FM-C3AxiQ
+  LV Write Access        read/write
+  LV Creation host, time astra-net-terminal, 2025-08-14 12:55:15 +0300
+  LV Status              available
+  # open                 0
+  LV Size                13,99 GiB
+  Current LE             3581
+  Segments               3
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:2
+
+  --- Logical volume ---
+  LV Path                /dev/astra-net-terminal-vg/root
+  LV Name                root
+  VG Name                astra-net-terminal-vg
+  LV UUID                sMnT5z-JFpg-1N7I-CaPz-QLpM-DDdf-D59cXh
+  LV Write Access        read/write
+  LV Creation host, time astra-net-terminal, 2025-07-25 18:31:43 +0300
+  LV Status              available
+  # open                 1
+  LV Size                20,28 GiB
+  Current LE             5192
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:0
+
+  --- Logical volume ---
+  LV Path                /dev/astra-net-terminal-vg/swap_1
+  LV Name                swap_1
+  VG Name                astra-net-terminal-vg
+  LV UUID                c7vdvW-fLuI-M7H2-8VNk-7SlU-H8oB-YNN4wP
+  LV Write Access        read/write
+  LV Creation host, time astra-net-terminal, 2025-07-25 18:31:43 +0300
+  LV Status              available
+  # open                 2
+  LV Size                4,00 GiB
+  Current LE             1024
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:1
+	-----------------------
+удаление логического диска
+--------------------------
+root@astra-net-terminal:/home/admilya# lvremove test_vg/T1
+	Do you really want to remove active logical volume test_vg/T1? [y/n]: yes
+	  Logical volume "T1" successfully removed
+	------------------------------------------
+root@astra-net-terminal:/home/admilya# lvs
+  LV     VG                    Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  root   astra-net-terminal-vg -wi-ao---- 20,28g
+  swap_1 astra-net-terminal-vg -wi-ao----  4,00g
+	----------------------------------------
+создание логического раздела определённого размера (6Gib)
+--------------------------------------------------
+root@astra-net-terminal:/home/admilya# lvcreate -L 6G -n T1 test_vg
+	  Logical volume "T1" created.
+	------------------------------
+root@astra-net-terminal:/home/admilya# lvs
+  LV     VG                    Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  root   astra-net-terminal-vg -wi-ao---- 20,28g
+  swap_1 astra-net-terminal-vg -wi-ao----  4,00g
+  T1     test_vg               -wi-a-----  6,00g
+	----------------------------------------
+проверка местоположения
+--------------
+root@astra-net-terminal:/home/admilya# ls -la /dev/test_vg
+	итого 0
+	drwxr-xr-x  2 root root   60 авг 14 13:06 .
+	drwxr-xr-x 20 root root 4240 авг 14 13:06 ..
+	lrwxrwxrwx  1 root root    7 авг 14 13:06 T1 -> ../dm-2
+root@astra-net-terminal:/home/admilya# lsblk -f
+	NAME                                FSTYPE      LABEL UUID                                   MOUNTPOINT
+	sda
+	├─sda1                              ext2              3b22a075-5452-4eca-a333-c22eb50409e0   /boot
+	├─sda2
+	└─sda5                              LVM2_member       pD0ARM-WRXm-3UVG-h3wr-6TJ4-Z0jh-HRUyO2
+	  ├─astra--net--terminal--vg-root   ext4              713ac7e8-bcc8-4b77-b78e-b60c3c893f29   /
+	  └─astra--net--terminal--vg-swap_1 swap              dd80707b-c190-4f6d-98c9-38b59c1c580f   [SWAP]
+	sdb
+	├─sdb1                              LVM2_member       t0mQ7S-lhsK-Wys5-70O0-eGvl-D0CT-rAXEYT
+	├─sdb2                              LVM2_member       eNRDuA-RJsf-KYuQ-uCtL-Lz54-P5RY-PPsPWE
+	│ └─test_vg-T1
+	└─sdb3                              LVM2_member       e3ZmaH-SeGo-yc1u-VTQj-bf1Q-vhkG-lsQoAx
+	sr0
+	---------------------------------------
+создаём файловую систему на LV 6GiB, на трёх PV.
+------------------------------------------------
+root@astra-net-terminal:/home/admilya# mkfs.ext4 /dev/test_vg/T1
+	mke2fs 1.43.4 (31-Jan-2017)
+	Creating filesystem with 1572864 4k blocks and 393216 inodes
+	Filesystem UUID: a691ddd7-0fda-42cd-9765-30e0a80be089
+	Superblock backups stored on blocks:
+        32768, 98304, 163840, 229376, 294912, 819200, 884736
+	Allocating group tables: done
+	Writing inode tables: done
+	Creating journal (16384 blocks): done
+	Writing superblocks and filesystem accounting information: done
+	----------------------------------------------------------------
+root@astra-net-terminal:/home/admilya# lsblk -f
+	NAME                                FSTYPE      LABEL UUID                                   MOUNTPOINT
+	sda
+	├─sda1                              ext2              3b22a075-5452-4eca-a333-c22eb50409e0   /boot
+	├─sda2
+	└─sda5                              LVM2_member       pD0ARM-WRXm-3UVG-h3wr-6TJ4-Z0jh-HRUyO2
+	  ├─astra--net--terminal--vg-root   ext4              713ac7e8-bcc8-4b77-b78e-b60c3c893f29   /
+	  └─astra--net--terminal--vg-swap_1 swap              dd80707b-c190-4f6d-98c9-38b59c1c580f   [SWAP]
+	sdb
+	├─sdb1                              LVM2_member       t0mQ7S-lhsK-Wys5-70O0-eGvl-D0CT-rAXEYT
+	├─sdb2                              LVM2_member       eNRDuA-RJsf-KYuQ-uCtL-Lz54-P5RY-PPsPWE
+	│ └─test_vg-T1                      ext4              a691ddd7-0fda-42cd-9765-30e0a80be089				<<<<<<<<<<<<<<<<<<<<<<<<
+	└─sdb3                              LVM2_member       e3ZmaH-SeGo-yc1u-VTQj-bf1Q-vhkG-lsQoAx
+	sr0
+	---------
+монтирование диска 
+------------------
+root@astra-net-terminal:/home/admilya# mount /dev/test_vg/T1 /data/less24/
+root@astra-net-terminal:/home/admilya# df -hT
+	Файловая система                          Тип      Размер Использовано  Дост Использовано% Cмонтировано в
+	udev                                      devtmpfs   1,9G            0  1,9G            0% /dev
+	tmpfs                                     tmpfs      393M          18M  375M            5% /run
+	/dev/mapper/astra--net--terminal--vg-root ext4        20G         4,5G   15G           24% /
+	tmpfs                                     tmpfs      2,0G            0  2,0G            0% /dev/shm
+	tmpfs                                     tmpfs      5,0M            0  5,0M            0% /run/lock
+	tmpfs                                     tmpfs      2,0G            0  2,0G            0% /sys/fs/cgroup
+	/dev/sda1                                 ext2       719M          78M  606M           12% /boot
+	tmpfs                                     tmpfs      393M            0  393M            0% /run/user/1000
+	/dev/mapper/test_vg-T1                    ext4       5,9G          24K  5,6G            1% /data/less24			<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+
+
+
+
+
+
