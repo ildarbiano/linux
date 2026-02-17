@@ -17,6 +17,7 @@ sudo apt-get remove –purge ansible
 
 sudo apt-get install tree
 tree
+who | tee output.log              #--выводит результат и на экран, и в файл
 sudo apt-get install lsof
 sudo lsof /var/lib/dpkg/lock-frontend
 
