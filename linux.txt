@@ -18,10 +18,15 @@ lsb_release -a		  #-OS
 cat /etc/*-release	#-OS
 cat /proc/version	  #-OS
 
+# Фиксация IP-address
+sudo cat /etc/netplan/00-installer-config.yaml
+sudo netplan try
+sudo netplan apply
+# Изменение имя хоста
+sudo hostnamectl set-hostname monigen
 
 apt remove ansible
 sudo apt-get remove –purge ansible
-
 sudo apt-get install tree
 tree
 who | tee output.log              #--выводит результат и на экран, и в файл
