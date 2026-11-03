@@ -4,9 +4,16 @@ sudo reboot
 
 #------Информация о сервере
 lscpu        		    #-CPU
+nproc               #-CPU
 cat /proc/meminfo	  #=RAM
-free -h      	  	  #-Memory
+free -h      	  	  #-RAM
 df			            #-disk
+df -h /             #-disk от корня
+lsblk               #-анализ дискового пространства
+Анализ: VirtualBox отдал 60 GB корректно — sda = 62.4G, раздел sda3 = 60.4G. Но LVM-том ubuntu--vg/ubuntu--lv внутри этого раздела занимает только 30.2G. То есть физический раздел уже имеет нужный размер, а логический том — нет. Расширять раздел через growpart не нужно, sda3 уже на всё место. Предложение: расширить логический том на всё свободное место внутри sda3 и затем растянуть файловую систему. Что даст: корневой раздел / станет ~59 GB вместо 30 GB.
+sudo lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
+sudo resize2fs /dev/ubuntu-vg/ubuntu-lv
+df -h /
 lsb_release -a		  #-OS
 cat /etc/*-release	#-OS
 cat /proc/version	  #-OS
